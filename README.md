@@ -23,7 +23,7 @@ EdiTable provides an editable table-like view on your data. Unlike PivotTables, 
 * Provides VBA class `Table` and auxiliary classes `Cell`, `LinkedCell`
 * Works by creating a link (`LinkedCell`) between the data cell and the view cell
 * A `Table` can be created as thus
-```visualbasic
+```vbscript
 Dim T As Table
 Set T = New Table
 T.AddColumn ActiveSheet.Range("A:A"), ColumnType.Normal
