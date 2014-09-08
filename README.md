@@ -1,5 +1,5 @@
-excel-vba-editable
-==================
+EdiTable
+========
 
 EdiTable provides an editable table-like view on your data. Unlike PivotTables, you can edit your data directly in the view.
 
