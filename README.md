@@ -36,4 +36,4 @@ T.Protect "password"
 
 ## Limitations
 
-* Cannot insert or remove data rows
+* Cannot insert or remove data rows. Instead, these cells can be protected from editing using `Table.Protect`.
