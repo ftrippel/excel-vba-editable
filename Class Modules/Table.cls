@@ -7,18 +7,20 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 ' Copyright https://github.com/ftrippel
 
 Option Explicit
 
+' Output Worksheet
 Private target As Worksheet
 
-' Normal Columns
+' Columns
 Private cols As New Dictionary
 Private dataCol As Range
 Private valueCol As Range
 
-' Linked Cells (lcs)
+' Linked Cells
 Private lcs As New Dictionary
 
 Public Sub AddColumn(col As Range, colType As ColumnType)
@@ -33,10 +35,10 @@ End Sub
 
 Public Sub Build(sheetName As String)
 
+    Speed True
+    
     Set target = Worksheets.Add(After:=Worksheets(Worksheets.Count))
     target.Name = sheetName
-    
-    Speed (True)
     
     Dim r As Range
     Dim c As Range
@@ -58,18 +60,18 @@ Public Sub Build(sheetName As String)
     Dim cellLookup As New Dictionary
     i = 1
     For Each c In valuesTmp
-        Set cell = New cell
-        cell.value = c.value
-        cell.numberFormat = c.numberFormat
+        Set cell = CreateCell(c)
         valueLookup.Add cell.value, i
         cellLookup.Add i, cell
         i = i + 1
     Next
+    
     target.Cells.Clear
-        
+    
     i = 1
     For Each v In cols.Items
         target.Cells(1, i).value = v.Cells(1, 1).value
+        target.Cells(1, i).numberFormat = v.Cells(1, 1).numberFormat
         i = i + 1
     Next v
     For Each v In valueLookup.Keys
@@ -96,9 +98,7 @@ Public Sub Build(sheetName As String)
         
         target.Cells(k, cols.Count + j).Locked = False
         
-        Set lc = New LinkedCell
-        lc.source = dataCol.Cells(k, 1)
-        lc.target = target.Cells(k, cols.Count + j)
+        Set lc = CreateLinkedCell(dataCol.Cells(k, 1), target.Cells(k, cols.Count + j))
         If Not lcs.Exists(lc.id) Then
             lcs.Add lc.id, lc
         End If
@@ -110,30 +110,42 @@ Public Sub Build(sheetName As String)
     Range(target.Cells(1, 1), target.Cells(1, cols.Count)).AutoFilter
     target.Columns.AutoFit
     
-    Speed (False)
+    Speed False
 
 End Sub
 
-Public Sub Protect(pwd As String)
-    target.Protect password:=pwd, AllowFiltering:=True, AllowSorting:=True
+Public Sub Protect(Optional pwd As String)
+    If pwd <> Empty Then
+        target.Protect password:=pwd, UserInterfaceOnly:=True, AllowFiltering:=True, AllowSorting:=True, AllowFormattingCells:=True, AllowFormattingRows:=True, AllowFormattingColumns:=True
+    Else
+        target.Protect UserInterfaceOnly:=True, AllowFiltering:=True, AllowSorting:=True, AllowFormattingCells:=True, AllowFormattingRows:=True, AllowFormattingColumns:=True
+    End If
+End Sub
+
+Public Sub Unprotect(Optional pwd As String)
+    If pwd <> Empty Then
+        target.Unprotect password:=pwd
+    Else
+        target.Unprotect
+    End If
 End Sub
 
 Public Sub PushValues()
-    Speed (True)
+    Speed True
     Dim k As Variant
     For Each k In lcs.Items
         k.SourceToTarget
     Next
-    Speed (False)
+    Speed False
 End Sub
 
 Public Sub PullValues()
-    Speed (True)
+    Speed True
     Dim k As Variant
     For Each k In lcs.Items
         k.TargetToSource
     Next
-    Speed (False)
+    Speed False
 End Sub
 
 Public Sub Destroy()
@@ -141,4 +153,5 @@ Public Sub Destroy()
     Application.DisplayAlerts = False
     target.Delete
     Application.DisplayAlerts = True
+    Speed False
 End Sub

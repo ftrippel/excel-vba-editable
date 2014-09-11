@@ -7,40 +7,46 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 ' Copyright https://github.com/ftrippel
 
 Option Explicit
 
-Private xsource As Range
-Private xtarget As Range
-    
+Private m_source As Range
+Private m_target As Range
+
+Public Sub Init(source As Range, target As Range)
+    Set m_source = source
+    Set m_target = target
+End Sub
+
 Public Property Get id() As String
-    id = xsource.Address & ":" & xtarget.Address
+    id = m_source.Address & ":" & m_target.Address
 End Property
 
 Public Property Get source() As Range
-    Set source = xsource
+    Set source = m_source
 End Property
 
 Public Property Let source(value As Range)
-    Set xsource = value
+    Set m_source = value
 End Property
 
 Public Property Get target() As Range
-    Set target = xtarget
+    Set target = m_target
 End Property
 
 Public Property Let target(value As Range)
-    Set xtarget = value
+    Set m_target = value
 End Property
 
 Public Sub TargetToSource()
-    xsource.value = xtarget.value
-    xsource.numberFormat = xtarget.numberFormat
+    m_source.value = m_target.value
+    m_source.numberFormat = m_target.numberFormat
 End Sub
 
 Public Sub SourceToTarget()
-    xtarget.value = xsource.value
-    xtarget.numberFormat = xsource.numberFormat
+    m_target.value = m_source.value
+    m_target.numberFormat = m_source.numberFormat
 End Sub
 

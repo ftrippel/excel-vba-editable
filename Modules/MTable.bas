@@ -1,4 +1,5 @@
 Attribute VB_Name = "MTable"
+
 ' Copyright https://github.com/ftrippel
 
 Option Explicit
